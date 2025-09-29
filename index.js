@@ -4,6 +4,7 @@ const fs = require("fs");
 const bodyparser = require("body-parser");
 const dateEt = require("./src/dateTimeET");
 const textRef = "public/txt/vanasonad.txt";
+const kulastajadRef = "public/txt/visitlog.txt"
 
 //käivitan express.js funktsiooni ja annan nime app
 const app = express();
@@ -53,7 +54,7 @@ app.post("/regvisit", (req, res)=> {
         }
         else {
             //faili senisele sisule lisamine
-            fs.appendFile("public/txt/visitlog.txt", req.body.nameInput + "; ", (err)=> {
+            fs.appendFile("public/txt/visitlog.txt", req.body.firstnameInput + " " + req.body.lastnameInput + "; ", (err)=> {
                 if (err) {
                     throw(err);
                 }
@@ -62,6 +63,20 @@ app.post("/regvisit", (req, res)=> {
                     res.render("reqvisit");
                 }
             });
+        }
+    });
+});
+
+app.get("/kulastajad", (req, res)=>{
+    let kulastajad = [];
+    fs.readFile(kulastajadRef, "utf-8", (err, data) => {
+        if(err) {
+            //kui tuleb error siis valjastame lehe aga lihtsalt vanasõnu pole
+            res.render("kulastajad", {heading: "Siin on inimesed, kes on märkinud oma külastuse", listData: ["Keegi pole kirja pannud, et käis mul külas ;("]});
+        }
+        else {
+            kulastajad = data.split("; ");
+            res.render("kulastajad", {heading: "Siin on inimesed, kes on märkinud oma külastuse", listData: kulastajad});
         }
     });
 });

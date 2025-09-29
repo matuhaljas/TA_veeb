@@ -15,7 +15,16 @@
         <li><a href="/timenow">Ajainfo</a></li>
         <li><a href="/vanasonad">Vanasõnad</a></li>
         <li><a href="/regvisit">Pane oma külastus kirja</a></li>
-		<li><a href="/kulastajad">Veebilehe külastajad</a></li>
     </ul>
+	<hr>
+	<h2><%= heading %></h2>
+	<ul>
+		<!--% märkidega on ejs kood ejs muutujate nimetamiseks-->
+		<% listData.forEach(function(listItem) { %>
+			<% if (listItem !== "") { %>
+			<li><%= listItem %></li>
+			<%} %>
+		<% }); %>
+	</ul>
 </body>
 </html>
