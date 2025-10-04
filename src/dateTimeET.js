@@ -3,7 +3,7 @@ const dateNowFormatedET = function() {
     let timeNow = new Date();
     const monthNamesET = ["jaanuar", "veebruar", "märts", "aprill", "mai", "juuni", "juuli", "august", "september", "oktoober", "november", "detsember"];
     const dayNamesET = ["pühapäev", "esmaspäev", "teisipäev", "kolmapäev", "neljapäev", "reede", "laupäev"]
-    return timeNow.getDate() + "." + monthNamesET[timeNow.getMonth()] + "." + timeNow.getFullYear();
+    return timeNow.getDate() + ". " + monthNamesET[timeNow.getMonth()] + " " + timeNow.getFullYear();
 }
 
 const weekDay = function() {
