@@ -16,12 +16,12 @@
         <li><a href="/Eestifilm">Eesti filmi avaleht</a></li>
     </ul>
 	<hr>
-	<h2>Eesti filmid</h2>
+	<h2>Eesti filmiinimesed</h2>
 	<ol>
-		<% movieList.forEach(function(listItem) { %>
-		<li><%= listItem.title %></li>
+		<% personList.forEach(function(listItem) { %>
+		<li><%= listItem.first_name %> <%= listItem.position_name %>: <%= listItem.description %></li>
 		<% }); %>
 	</ol>
-
+	<a href="/Eestifilm/filmiinimesed_ametid_add">Siin saad lisada juurde ameteid</a>
 </body>
 </html>

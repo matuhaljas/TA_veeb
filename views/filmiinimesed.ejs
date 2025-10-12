@@ -19,7 +19,11 @@
 	<h2>Eesti filmiinimesed</h2>
 	<ol>
 		<% personList.forEach(function(listItem) { %>
-		<li><%= listItem.first_name %> <%= listItem.last_name %>, sündinud <%= listItem.born %></li>
+			<% if (listItem.deceased != "") { %>
+				<li><%= listItem.first_name %> <%= listItem.last_name %>, sündinud <%= listItem.born %>, surnud <%= listItem.deceased %></li>
+			<%} else{%>
+				<li><%= listItem.first_name %> <%= listItem.last_name %>, sündinud <%= listItem.born %></li>
+			<% } %>
 		<% }); %>
 	</ol>
 

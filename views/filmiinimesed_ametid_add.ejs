@@ -18,18 +18,12 @@
 	<hr>
 	<h2>Eesti filmiinimeste andmete lisamine andmebaasi</h2>
 	<form method="POST">
-    <label for="firstNameInput">Filmiinimese eesnimi</label>
-	<input id="firstNameInput" name="firstNameInput" type="text" placeholder="Eesnimi ..." required>
+    <label for="nameInput">Ameti nimetus</label>
+	<input id="nameInput" name="nameInput" type="text" placeholder="Ametikoha nimetus..." required>
 	<br>
-	<label for="lastNameInput">Filmiinimese perekonnanimi</label>
-	<input id="lastNameInput" name="lastNameInput" type="text" placeholder="Perekonnanimi ..." required>
-	<br>
-	<label for="bornInput">Filmiinimese sünniaeg</label>
-	<input id="bornInput" name="bornInput" type="date" required>
-	<br>
-	<label for="deceasedInput">Filmiinimese surmaaeg</label>
-	<input id="deceasedInput" name="deceasedInput" type="date">
-	<br>
+	<label for="positionDescriptionInput">Ameti lühikirjeldus</label>
+	<textarea id="positionDescriptionInput" name="positionDescriptionInput" cols="100 rows="5" placeholder="Ameti lühikirjeldus...">
+	</textarea>
 	<input id="personSubmit" name="personSubmit" type="submit" value="Salvesta">
   </form>
   <p>Staatus: <%= notice %></p>
