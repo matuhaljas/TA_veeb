@@ -1,5 +1,6 @@
 const express = require("express");
 const fs = require("fs");
+const mysql = require("mysql2/promise");
 //päringu lahtiharutaja POST jaoks
 const bodyparser = require("body-parser");
 //SQL andmebaasi moodul
@@ -20,15 +21,31 @@ app.use(express.static("public"));
 //parsime päringu URL-i, lipp false, kui ainult tekst ja true, kui muid andmeid ka
 app.use(bodyparser.urlencoded({extended: false}));
 
-/*dbConf = {
-    host: dbInfo.configData.host,
-    user: dbInfo.configData.user,
-    password: dbInfo.configData.passWord,
-    database: dbInfo.configData.dataBase
-};*/
-
-app.get("/", (req, res)=>{
-    res.render("index");
+app.get("/", async (req, res)=>{
+	let conn;
+	try {
+		conn = await mysql.createConnection(dbConf);
+		let sqlReq = "SELECT file_name, alt_text FROM gallery_photos WHERE id=(SELECT MAX(id) FROM gallery_photos WHERE privacy=? AND deleted IS NULL)";
+		const privacy = 3;
+		const [rows, fields] = await conn.execute(sqlReq, [privacy]);
+		console.log(rows);
+		let imgAlt = "Avalik foto";
+		if(rows[0].alt_text != ""){
+			imgAlt = rows[0].alt_text;
+		}
+		res.render("index", {imgFile: "gallery/normal/" + rows[0].file_name, imgAlt: imgAlt});
+	}
+	catch(err){
+		console.log(err);
+		//res.render("index");
+		res.render("index", {imgFile: "", imgAlt: "Ei leidnud ühtegi avalikku pilti andmebaasist"});
+	}
+	finally {
+		if(conn){
+			await conn.end();
+			console.log("Andmebaasiühendus suletud!");
+		}
+	}
 });
 
 app.get("/timenow", (req, res)=>{
@@ -51,50 +68,34 @@ app.get("/vanasonad", (req, res)=>{
     });
 });
 
-app.get("/regvisit", (req, res)=>{
-	res.render("reqvisit");
-});
-
-app.post("/regvisit", (req, res)=> {
-    console.log(req.body);
-    //avan teksti faili kirjutamiseks sellisel moel, et kui teda pole, luuakse
-    //parameeter "a"
-    fs.open("public/txt/visitlog.txt", "a", (err, file)=>{
-        if (err) {
-            throw(err);
-        }
-        else {
-            //faili senisele sisule lisamine
-            fs.appendFile("public/txt/visitlog.txt", req.body.firstnameInput + " " + req.body.lastnameInput + ", " + dateEt.fullDate() + " kell " + dateEt.fullTime() + "; " , (err)=> {
-                if (err) {
-                    throw(err);
-                }
-                else {
-                    console.log("Salvestatud!")
-                    res.render("reqvisit");
-                }
-            });
-        }
-    });
-});
-
-app.get("/kulastajad", (req, res)=>{
-    let kulastajad = [];
-    fs.readFile(kulastajadRef, "utf-8", (err, data) => {
-        if(err) {
-            //kui tuleb error siis valjastame lehe aga lihtsalt vanasõnu pole
-            res.render("kulastajad", {heading: "Siin on inimesed, kes on märkinud oma külastuse", listData: ["Keegi pole kirja pannud, et käis mul külas ;("]});
-        }
-        else {
-            kulastajad = data.split("; ");
-            res.render("kulastajad", {heading: "Siin on inimesed, kes on märkinud oma külastuse", listData: kulastajad});
-        }
-    });
-});
-
 //Eesti filmi marsruudid
 const eestifilmRouter = require("./routes/eestifilm_Routes");
 app.use("/Eestifilm", eestifilmRouter);
 
+//Galeriifotode üleslaadimine
+const photoupRouter = require("./routes/photoupRoutes");
+app.use("/galleryphotupload", photoupRouter);
+
+//Galeriifotode vaatamine
+const photogalleryRouter = require("./routes/photogalleryRoutes");
+app.use("/photogallery", photogalleryRouter);
+
+//Külalislogide marsruudid
+const visitsRouter = require("./routes/visitRoutes");
+app.use("/kulastajad", visitsRouter);
+
+//Külalislogide salvestamise marsruudid
+const reqvisitsRouter = require("./routes/reqvisitRoutes");
+app.use("/reqvisit", reqvisitsRouter);
+
+/*
+//Uudiste salvestamis ja vaatamis marsruudid
+const newsRouter = require("./routes/newsRoutes");
+app.use("/news", newsRouter);
+*/
+
+//Konto loomise marsruudid
+const signupRouter = require("./routes/signupRoutes");
+app.use("/signup", signupRouter);
 
 app.listen(5122);

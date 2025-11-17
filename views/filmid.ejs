@@ -12,19 +12,18 @@
 	<p style="color: red;">See on veel üks tekstilõik ja see on punane...</p>
 	<hr>
     <ul>
-        <li><a href="/timenow">Ajainfo</a></li>
-        <li><a href="/vanasonad">Vanasõnad</a></li>
-        <li><a href="/reqvisit">Pane oma külastus kirja</a></li>
+        <li><a href="/">Avaleht</a></li>
+        <li><a href="/Eestifilm">Eesti filmi avaleht</a></li>
     </ul>
 	<hr>
-	<h2><%= heading %></h2>
-	<ul>
-		<!--% märkidega on ejs kood ejs muutujate nimetamiseks-->
-		<% listData.forEach(function(listItem) { %>
-			<% if (listItem !== "") { %>
-			<li><%= listItem %></li>
-			<%} %>
+	<h2>Eesti filmiinimesed</h2>
+	<ol>
+		<% personList.forEach(function(listItem) { %>
+				<li><%= listItem.title %>, Väljastatud: <%= listItem.production_year %>, Kestvus: <%= listItem.duration %>, Kirjelus: <%= listItem.description %></li>
 		<% }); %>
-	</ul>
+	</ol>
+
+	<p>Lisa filme juurde <a href="/Eestifilm/filmid_add">siit</a></p>
+
 </body>
 </html>

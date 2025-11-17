@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+
+<html lang="et">
+<head>
+	<meta charset="utf-8">
+	<title>Marcus Haljasoks. veebiprogrammeerimine</title>
+</head>
+<body>
+	<img src="images/vp_banner_2025_TA.jpg" alt="kursuse bänner">
+	<h1>Marcus Haljasoks. veebiprogrammeerimine</h1>
+	<p>Veebileht on loodud veebiprogrammeerimise kursusel <a href="https://www.tlu.ee">Tallinna Ülikoolis</a>...</p>
+	<p style="color: red;">See on veel üks tekstilõik ja see on punane...</p>
+	<hr>
+    <ul>
+        <li><a href="/">Avaleht</a></li>
+    </ul>
+	<hr>
+	<h2>Lae üles uudis</h2>
+	<form method="POST" enctype="multipart/form-data">
+		<label for="nameInput">Sisesta uudise nimi</label>
+		<input id="nameInput" name="nameInput" type="text" placeholder="Uudis...">
+		<br>
+		<label for="message">Sisesta uudise põhi sisu</label>
+		<textarea rows="3" cols="5" id="message" name="message" placeholder="Uudise sisu"></textarea>
+		<br>
+		<label for="photoInput">Vali soovitud pildifail:</label>
+		<input id="photoInput" name="photoInput" type="file">
+		<br>
+		<label for="altInput">Pildi alternatiivtekst: </label>
+		<input id="altInput" name="altInput" type="text" placeholder="Sellel pildil on ...">
+		<br>
+		<input type="submit" id="photoSubmit" name="photoSubmit" value="Lae foto üles">
+  	</form>
+</body>
+</html>

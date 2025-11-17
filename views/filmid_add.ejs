@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<html lang="et">
+<head>
+	<meta charset="utf-8">
+	<title>Marcus Haljasoks. veebiprogrammeerimine</title>
+</head>
+<body>
+	<img src="images/vp_banner_2025_TA.jpg" alt="kursuse bänner">
+	<h1>Marcus Haljasoks. veebiprogrammeerimine</h1>
+	<p>Veebileht on loodud veebiprogrammeerimise kursusel <a href="https://www.tlu.ee">Tallinna Ülikoolis</a>...</p>
+	<p style="color: red;">See on veel üks tekstilõik ja see on punane...</p>
+	<hr>
+    <ul>
+        <li><a href="/">Avaleht</a></li>
+        <li><a href="/Eestifilm">Eesti filmi avaleht</a></li>
+    </ul>
+	<hr>
+	<h2>Eesti filmide lisamine</h2>
+	<form method="POST">
+    <label for="nameInput">Filmi nimi</label>
+	<input id="nameInput" name="nameInput" type="text" placeholder="Filmi nimi ..." required>
+	<br>
+	<label for="productionYearInput">Filmi väljalaske aasta</label>
+	<input id="productionYearInput" name="productionYearInput" type="number" placeholder="420" required>
+	<br>
+	<label for="durationInput">Filmi kestvus (minutites)</label>
+	<input id="durationInput" name="durationInput" type="number" required>
+	<br>
+	<label for="descriptionInput">Filmi lühikirjeldus</label>
+	<textarea id="descriptionInput" name="descriptionInput" cols="100 rows="5" placeholder="Filmi lühikirjeldus...">
+	</textarea>
+	<br>
+	<input id="personSubmit" name="personSubmit" type="submit" value="Salvesta">
+  </form>
+  <p>Staatus: <%= notice %></p>
+</body>
+</html>

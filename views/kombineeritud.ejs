@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+<html lang="et">
+<head>
+	<meta charset="utf-8">
+	<title>Marcus Haljasoks. veebiprogrammeerimine</title>
+</head>
+<body>
+	<img src="images/vp_banner_2025_TA.jpg" alt="kursuse bänner">
+	<h1>Marcus Haljasoks. veebiprogrammeerimine</h1>
+	<p>Veebileht on loodud veebiprogrammeerimise kursusel <a href="https://www.tlu.ee">Tallinna Ülikoolis</a>...</p>
+	<p style="color: red;">See on veel üks tekstilõik ja see on punane...</p>
+	<hr>
+    <ul>
+        <li><a href="/">Avaleht</a></li>
+        <li><a href="/Eestifilm">Eesti filmi avaleht</a></li>
+        <li><a href="/Eestifilm/kombineeritud_add">Lisa siit juurde ühendusi isikute-filmide-ametite vahel</a></li>
+
+    </ul>
+	<hr>
+	<h2>Eesti filmiinimesed</h2>
+	<% if (relations.length === 0) { %>
+		<p>Hetkel pole ühtegi seost.</p>
+	<% } else { %>
+		<table border="1.0" cellpadding="5.0" cellspacing="0">
+		<thead>
+			<tr>
+			<th>Isik</th>
+			<th>Film</th>
+			<th>Amet</th>
+			<th>Roll</th>
+			</tr>
+		</thead>
+		<tbody>
+			<% relations.forEach(function(item) { %>
+			<tr>
+				<td><%= item.first_name %> <%= item.last_name %></td>
+				<td><%= item.title %></td>
+				<td><%= item.position_name %></td>
+				<td>
+				<% if (item.role) { %>
+					<%= item.role %>
+				<% } else { %>
+					-
+				<% } %>
+				</td>
+			</tr>
+			<% }); %>
+		</tbody>
+		</table>
+	<% } %>
+</body>
+</html>
