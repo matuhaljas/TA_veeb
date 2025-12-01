@@ -1,6 +1,5 @@
 const mysql = require("mysql2/promise");
 const fs = require("fs").promises;
-const sharp = require("sharp");
 const dbInfo = require("../../../vp_2025_config");
 
 dbConf = {
@@ -15,47 +14,48 @@ dbConf = {
 //@route GET /galleryphotupload
 //@access public
 
-const photouploadPage = (req, res)=>{
-	res.render("galleryphotoupload");
+const newsPage = async (req, res)=>{
+	let conn;
+	try {
+		conn = await mysql.createConnection(dbConf);
+		let sqlReq = "SELECT title, content, photofilename, alttext FROM news WHERE expire > ?";
+		currentDate = new Date();
+		const [rows, fields] = await conn.execute(sqlReq, [currentDate]);
+		console.log(rows);
+		let newsData = [];
+		for (let i = 0; i < rows.length; i ++){
+			let newsPhoto = "empty.png"
+			let imagehref = "/images/"
+			let altText = "Pilt puudub";
+			if(rows[i].photofilename != ""){
+				imagehref = "gallery/normal/"
+				newsPhoto = rows[i].photofilename;
+				if(rows[i].alttext != ""){
+					altText = rows[i].alttext;
+				}
+			};
+			newsData.push({title: rows[i].title, content : rows[i].content, src: newsPhoto, alt: altText, href: imagehref});
+		}
+		res.render("news", {newsData: newsData});
+	}
+	catch(err) {
+		console.log(err)
+		res.render("news", {newsData: ""});
+	}
+	finally {
+		if(conn){
+	  		await conn.end();
+	    	console.log("Andmebaasiühendus on suletud!");
+	  }
+	}
+	//res.render("news", {newsData: newsData});
 };
 
 //@desc page for uploading photos to gallery
 //@route POST /galleryphotupload
 //@access public
 
-const photouploadPagePost = async (req, res)=>{
-	let conn;
-	console.log(req.body);
-	console.log(req.file);
-	try {
-	  const fileName = "vp_" + Date.now() + ".jpg";
-	  console.log(fileName);
-	  await fs.rename(req.file.path, req.file.destination + fileName);
-	  //loon normaalsuuruse 800X600
-	  await sharp(req.file.destination + fileName).resize(800,600).jpeg({quality: 90}).toFile("./public/gallery/normal/" + fileName);
-	  //loon thumbnail pildi 100X100
-	  await sharp(req.file.destination + fileName).resize(100,100).jpeg({quality: 90}).toFile("./public/gallery/thumbs/" + fileName);
-	  conn = await mysql.createConnection(dbConf);
-	  let sqlReq = "INSERT INTO gallery_photos (file_name, orig_name, alt_text, privacy, user_id) VALUES(?,?,?,?,?)";
-	  //kuna kasutajakontosid veel ei ole, siis määrame userid = 1
-	  const userId = 1;
-	  const [result] = await conn.execute(sqlReq, [fileName, req.file.originalname, req.body.altInput, req.body.privacyInput, userId]);
-	  console.log("Salvestati kirje: " + result.insertId);
-	  res.render("galleryphotoupload");
-	}
-	catch(err) {
-	  console.log(err);
-	  res.render("galleryphotoupload");
-	}
-	finally {
-	  if(conn){
-	  await conn.end();
-	    console.log("Andmebaasiühendus on suletud!");
-	  }
-	}
-};
 
 module.exports = {
-	photouploadPage,
-	photouploadPagePost
+	newsPage
 };

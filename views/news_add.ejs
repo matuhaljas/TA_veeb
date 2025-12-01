@@ -17,11 +17,14 @@
 	<hr>
 	<h2>Lae üles uudis</h2>
 	<form method="POST" enctype="multipart/form-data">
-		<label for="nameInput">Sisesta uudise nimi</label>
-		<input id="nameInput" name="nameInput" type="text" placeholder="Uudis...">
+		<label for="titleInput">Sisesta uudise nimi</label>
+		<input id="titleInput" name="titleInput" type="text" placeholder="Uudis..." required>
 		<br>
-		<label for="message">Sisesta uudise põhi sisu</label>
-		<textarea rows="3" cols="5" id="message" name="message" placeholder="Uudise sisu"></textarea>
+		<label for="contentInput">Sisesta uudise põhi sisu</label>
+		<textarea rows="3" cols="5" id="contentInput" name="contentInput" placeholder="Uudise sisu" required></textarea>
+		<br>
+		<label for="expireInput">Määra millal aegub uudis</label>
+		<input id="expireInput" name="expireInput" type="date" required>
 		<br>
 		<label for="photoInput">Vali soovitud pildifail:</label>
 		<input id="photoInput" name="photoInput" type="file">

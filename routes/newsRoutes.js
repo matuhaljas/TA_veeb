@@ -1,18 +1,12 @@
 const express = require("express");
-const multer = require("multer");
-
 const router = express.Router();
-//seadistame vahevara fotode Ã¼leslaadimiseks kindlasse kataloogi
-const uploader = multer({dest: "./public/gallery/orig/"});
 
 //kontrollerid
 const {
-	photouploadPage,
-	photouploadPagePost
-} = require("../controllers/photouploadControllers");
+	newsPage
+} = require("../controllers/newsControllers");
 
-router.route("/").get(photouploadPage);
+router.route("/").get(newsPage);
 
-router.route("/").post(uploader.single("photoInput"), photouploadPagePost);
 
 module.exports = router;

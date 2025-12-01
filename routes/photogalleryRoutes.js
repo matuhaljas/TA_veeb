@@ -1,18 +1,17 @@
 const express = require("express");
+const loginCheck = require("../src/checkLogin");
+
 const router = express.Router();
-//seadistame vahevara fotode üleslaadimiseks kindlasse kataloogi
-//const uploader = multer({dest: "./public/gallery/orig/"});
+//kÃµigile mrsruutidele lisan vahevara sisselogimise kontrollimiseks
+router.use(loginCheck.isLogin);
 
 //kontrollerid
 const {
 	photoGallery,
-	galleryPage
-} = require("../controllers/photogalleryControllers");
+	galleryPage} = require("../controllers/photogalleryControllers");
 
 router.route("/").get(photoGallery);
 
 router.route("/:page").get(galleryPage);
-
-//router.route("/").post(uploader.single("photoInput"), photouploadPagePost);
 
 module.exports = router;

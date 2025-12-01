@@ -19,24 +19,29 @@
 
     </ul>
 	<hr>
-	<!-- Dialoogiaken normaalsuuruses fotode näitamiseks -->
-	<dialog id="modal" class="modalarea">
-		<span id="modalClose" class="modalclose">&times;</span>
-	<div class="modalhorizontal">
-		<div class="modalvertical">
-			<p id="modalCaption"></p>
-			<img id="modalImage" src="/images/empty.png" alt="galeriipilt">
-		</div>
-	</div>
-	</dialog>
-	<h2>Uudised</h2>
-	<% uudisData.forEach(function(uudis)){ %>
-		<h3><%=uudisData.pealkiri%></h3>
-		<p><%=uudisData.sisu%></p>
-	<div>
-		<% galleryData.forEach(function(image){ %>
-		<img src="<%=imagehref%><%=image.src%>" alt="<%=image.alt%>" class="thumbs" data-filename="<%=image.src%>">
-		<% }); %>
-	</div>
+	
+	    
+    <% newsData.forEach(item => { %>
+        
+        <div class="news-item" style="border: 1px solid #ccc; margin-bottom: 15px; padding: 10px;">
+            
+            <!-- Link and Title -->
+        	<h2><%= item.title %></h2>
+
+            <!-- Image -->
+			<img 
+				src="<%=item.imagehref%><%=item.src%>"
+				alt="<%= item.alt %>" 
+				style="width: 100%; max-width: 300px; height: auto; display: block; margin-top: 5px; margin-bottom: 10px;" 
+				onerror="this.onerror=null;this.src='https://placehold.co/300x200/f5f5f5/555555?text=Missing+Image';"
+			/>
+
+            <!-- Content -->
+            <p><%= item.content %></p>
+
+        </div>
+
+    <% }); %>
+
 </body>
 </html>

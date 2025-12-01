@@ -1,19 +1,29 @@
 const express = require("express");
+require("dotenv").config();
 const fs = require("fs");
 const mysql = require("mysql2/promise");
-//päringu lahtiharutaja POST jaoks
+const session = require("express-session");
 const bodyparser = require("body-parser");
-//SQL andmebaasi moodul
-//kuna kasutame asunc siis impordime msql2/promise mooduli
-//const mysql = require("mysql2/promise");
 const dateEt = require("./src/dateTimeET");
-//const dbInfo = require("../../vp_2025_config");
+const dbInfo = require("../../vp_2025_config");
+const loginCheck = require("./src/checkLogin");
 const textRef = "public/txt/vanasonad.txt";
+const pool = require("./src/dbPool");
 const kulastajadRef = "public/txt/visitlog.txt"
+
+console.log(process.env.DB_HOST)
+
+/*dbConf = {
+    host: dbInfo.configData.host,
+    user: dbInfo.configData.user,
+    password: dbInfo.configData.passWord,
+    database: dbInfo.configData.dataBase
+};*/
 
 //käivitan express.js funktsiooni ja annan nime app
 const app = express();
-
+//app.use(session({secret: dbInfo.configData.sessionSecret, saveUninitialized: true, resave: true}));
+app.use(session({secret: process.env.SES_SECRET, saveUninitialized: true, resave: true}));
 //määran veebilehe renderdamise mootori
 app.set("view engine", "ejs");
 //määran ühe päris kataloogi avalikult kättesaadavaks
@@ -22,12 +32,13 @@ app.use(express.static("public"));
 app.use(bodyparser.urlencoded({extended: false}));
 
 app.get("/", async (req, res)=>{
-	let conn;
+	//let conn;
 	try {
 		conn = await mysql.createConnection(dbConf);
 		let sqlReq = "SELECT file_name, alt_text FROM gallery_photos WHERE id=(SELECT MAX(id) FROM gallery_photos WHERE privacy=? AND deleted IS NULL)";
 		const privacy = 3;
-		const [rows, fields] = await conn.execute(sqlReq, [privacy]);
+		//const [rows, fields] = await conn.execute(sqlReq, [privacy]);
+		const [rows, fields] = await pool.execute(sqlReq, [privacy]);
 		console.log(rows);
 		let imgAlt = "Avalik foto";
 		if(rows[0].alt_text != ""){
@@ -41,10 +52,10 @@ app.get("/", async (req, res)=>{
 		res.render("index", {imgFile: "", imgAlt: "Ei leidnud ühtegi avalikku pilti andmebaasist"});
 	}
 	finally {
-		if(conn){
+		/*if(conn){
 			await conn.end();
 			console.log("Andmebaasiühendus suletud!");
-		}
+		}*/
 	}
 });
 
@@ -68,6 +79,20 @@ app.get("/vanasonad", (req, res)=>{
     });
 });
 
+//sisseloginud kasutajate osa avaleht
+app.get("/home", loginCheck.isLogin, (req,res)=>{
+	console.log("Sisse logis kasutaja: " + req.session.userId);
+	res.render("home", {user: req.session.firstName + " " + req.session.lastname});
+});
+
+//Väljalogimine
+app.get("/logout", (req,res)=>{
+	//Tühistame sessiooni
+	req.session.destroy();
+	console.log("VÃ¤lja logitud!");
+	res.redirect("/");
+});
+
 //Eesti filmi marsruudid
 const eestifilmRouter = require("./routes/eestifilm_Routes");
 app.use("/Eestifilm", eestifilmRouter);
@@ -88,14 +113,20 @@ app.use("/kulastajad", visitsRouter);
 const reqvisitsRouter = require("./routes/reqvisitRoutes");
 app.use("/reqvisit", reqvisitsRouter);
 
-/*
-//Uudiste salvestamis ja vaatamis marsruudid
+//Uudiste vaatamis marsruudid
 const newsRouter = require("./routes/newsRoutes");
 app.use("/news", newsRouter);
-*/
+
+//Uudiste salvestamis marsruudid
+const newsuploadRouter = require("./routes/newsuploadRoutes");
+app.use("/news_add", newsuploadRouter);
 
 //Konto loomise marsruudid
 const signupRouter = require("./routes/signupRoutes");
 app.use("/signup", signupRouter);
+
+//sisselogimise marsruudid
+const signinRouter = require("./routes/signinRoutes");
+app.use("/signin", signinRouter);
 
 app.listen(5122);
